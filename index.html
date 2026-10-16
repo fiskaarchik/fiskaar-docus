@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FISKAAR Doc</title>
+<style>
+:root {
+  --bg:#0b0d12;--panel:#12151d;--panel2:#191d28;
+  --line:#292e3c;--text:#eef0f8;--muted:#929aaf;
+  --purple:#7966f5;--purple2:#a99aff;--green:#52d6a0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px "Segoe UI",Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--purple2);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#0e1017;border-right:1px solid var(--line);padding:22px 13px;display:flex;flex-direction:column;flex-shrink:0}
+.brand{display:flex;gap:11px;align-items:center;padding:0 9px 28px}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(140deg,#b2a5ff,#5d49df);display:grid;place-items:center;font-size:24px;font-weight:900}
+.brand b{font-size:16px;letter-spacing:.3px}.brand b span{color:var(--purple2)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.5px;margin-top:5px}
+.label{font-size:10px;letter-spacing:1.5px;color:#737b90;padding:17px 10px 8px;font-weight:bold}
+.nav{width:100%;padding:12px;border:0;border-radius:9px;background:transparent;color:#aeb5c7;text-align:left;margin:2px 0;display:flex;align-items:center;gap:12px}
+.nav:hover,.nav.active{background:#24213b;color:#d1c9ff}.nav.active{box-shadow:inset 3px 0 var(--purple)}
+.nav i{font-style:normal;width:20px;text-align:center;font-size:17px}
+.profile{margin-top:auto;border-top:1px solid var(--line);padding:17px 5px 0;display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;background:#292442;border-radius:10px;display:grid;place-items:center;color:#c6baff;font-weight:bold}
+.profile-info{flex:1;min-width:0}.profile-info b{font-size:12px;overflow-wrap:anywhere}.profile-info small{display:block;color:var(--muted);margin-top:4px}
+.main{flex:1;min-width:0}
+.topbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 28px}
+.crumb{font-size:13px;color:var(--muted)}.crumb b{color:var(--text)}
+.top-actions{display:flex;gap:9px;align-items:center}
+.content{max-width:1450px;margin:auto;padding:30px}
+.page{display:none}.page.active{display:block}
+h1{font-size:32px;letter-spacing:-1px;margin:10px 0 12px}
+h2{font-size:19px;margin:0 0 15px}h3{font-size:15px}
+.eyebrow{color:var(--purple2);font-size:10px;font-weight:bold;letter-spacing:1.8px}
+.muted,.subtitle{color:var(--muted);line-height:1.7}
+.subtitle{margin:0 0 24px}
+.btn{padding:10px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text)}
+.btn:hover{border-color:var(--purple)}
+.btn.primary{background:var(--purple);border-color:var(--purple);color:white}
+.btn.danger{color:#ff9b9b}
+.btn.full{width:100%;margin-top:8px}
+.search,.field{width:100%;background:#0d1017;border:1px solid var(--line);border-radius:9px;padding:12px;color:var(--text)}
+.search{width:240px;padding:10px}
+.field:focus,.search:focus{outline:none;border-color:var(--purple)}
+textarea.field{resize:vertical;line-height:1.7}
+.field::placeholder,.search::placeholder{color:#687084}
+label{display:block;color:#aeb5c7;font-size:12px;margin:15px 0 7px}
+.hero{position:relative;overflow:hidden;background:radial-gradient(ellipse at 90% 10%,#3b306c,transparent 45%),linear-gradient(120deg,#1b1a2b,#151823);border:1px solid #37314f;border-radius:18px;padding:32px;margin-bottom:23px}
+.hero h1{font-size:38px;line-height:1.18}
+.hero p{max-width:540px;color:#b7b9ca;line-height:1.8;margin:13px 0 22px}
+.hero-star{position:absolute;right:8%;top:20px;font-size:115px;color:#b3a6ff;text-shadow:0 0 50px #7966f5;pointer-events:none}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:20px 0 30px}
+.stat,.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:13px}
+.stat{padding:18px}.stat strong{display:block;font-size:26px;margin-bottom:7px}.stat span{font-size:11px;color:var(--muted)}
+.heading-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.heading-row span{color:var(--muted);font-size:10px;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{padding:19px;min-width:0}
+.card-link{width:100%;text-align:left;color:var(--text);transition:.15s}
+.card-link:hover{transform:translateY(-2px);border-color:#6c5fbd}
+.card-icon{width:42px;height:42px;border-radius:12px;background:#25203f;color:#c5baff;display:grid;place-items:center;font-size:20px}
+.card h3{margin:13px 0 8px}.card p{color:var(--muted);font-size:12px;line-height:1.7}
+.card-foot{color:var(--purple2);font-size:12px;margin-top:18px}
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:17px 0}
+.toolbar .field{max-width:350px;flex:1}
+.panel{padding:19px}.list-panel{padding:6px 18px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:15px 2px}
+.item:last-child{border-bottom:0}.item strong{font-size:13px;overflow-wrap:anywhere}
+.item p{font-size:11px;color:var(--muted);margin:6px 0 0;white-space:pre-wrap}
+.item-actions{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.item-actions button{padding:7px 9px;font-size:11px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;line-height:1.8}
+.notice{background:#211d38;border:1px solid #4d4383;border-radius:10px;padding:13px;color:#c9c1ff;font-size:12px;line-height:1.7;margin:17px 0}
+.pill{display:inline-block;background:#282342;color:#c7bbff;border-radius:20px;padding:5px 9px;font-size:10px}
+.editor-layout{display:grid;grid-template-columns:minmax(0,1fr) 225px;gap:16px;align-items:start}
+.paper{background:#fff;color:#22252f;border-radius:12px;overflow:hidden}
+.editor-tools{display:flex;gap:6px;flex-wrap:wrap;padding:10px;background:#f0f1f5;border-bottom:1px solid #ddd}
+.editor-tools button{background:#fff;border:1px solid #ddd;border-radius:6px;color:#222;padding:7px 9px}
+.paper-title{width:100%;border:0;border-bottom:1px solid #eee;padding:19px;font-size:21px;outline:none;color:#222}
+.paper-body{padding:23px;min-height:370px;outline:none;line-height:1.8;color:#222;overflow-wrap:anywhere}
+.paper-body:empty:before{content:attr(data-placeholder);color:#999}
+.chat{height:300px;overflow:auto;background:#0d1017;border-radius:10px;padding:12px;margin-bottom:15px}
+.message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;padding:12px;border-radius:10px;margin:8px 0}
+.message.bot{background:#1b2030}.message.user{background:#30275b;margin-left:12%}
+.subhead{margin:28px 0 14px}
+footer{padding:26px 0;color:#636b80;font-size:11px}
+.toast{display:none;position:fixed;right:20px;bottom:20px;max-width:calc(100vw - 40px);padding:13px 18px;background:#25213c;border:1px solid #5b4d9b;border-radius:10px;z-index:10}
+.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:16px;z-index:20}
+.modal.open{display:grid}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:23px;width:min(600px,100%);max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#282146,transparent 52%),var(--bg)}
+.auth-card{width:min(420px,100%);padding:30px;background:var(--panel);border:1px solid var(--line);border-radius:19px}
+.auth-card h1{text-align:center;font-size:27px}.auth-card h1 span{color:var(--purple2)}
+.auth-card>.muted{text-align:center;font-size:12px}
+.auth-logo{margin:auto auto 14px;width:48px;height:48px;border-radius:14px;background:linear-gradient(140deg,#b2a5ff,#5d49df);display:grid;place-items:center;font-size:25px;font-weight:bold}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#0c0f16;border-radius:9px;padding:4px;margin:23px 0}
+.auth-tabs button{padding:10px;background:transparent;border:0;color:var(--muted);border-radius:7px}
+.auth-tabs button.active{background:#292442;color:#d0c8ff}
+.error{color:#ff9b9b;font-size:12px;min-height:17px}
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar{width:220px}.content{padding:22px}}
+@media(max-width:700px){
+ .app{display:block}.sidebar{width:100%;padding:10px;border:0;border-bottom:1px solid var(--line)}
+ .brand{padding-bottom:10px}.label,.profile{display:none}
+ .sidebar nav{display:flex;overflow-x:auto;gap:4px}.nav{width:auto;white-space:nowrap;padding:10px;font-size:11px}
+ .topbar{height:auto;min-height:60px;padding:10px 14px;flex-wrap:wrap}.search{width:150px}
+ .content{padding:16px}.grid{grid-template-columns:1fr}.hero{padding:23px}.hero h1{font-size:29px}.hero-star{right:8px;font-size:65px;top:8px;opacity:.45}
+ .stats{gap:7px}.stat{padding:12px}.stat strong{font-size:21px}.editor-layout{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="auth" class="auth-screen">
+ <div class="auth-card">
+  <div class="auth-logo">F</div>
+  <div class="eyebrow" style="text-align:center">ROLEPLAY WORKSPACE</div>
+  <h1>FISKAAR <span>DOC</span></h1>
+  <p class="muted">Документы, справочник и инструменты в одном месте.</p>
+  <div class="auth-tabs">
+   <button id="loginTab" class="active" onclick="setMode('login')">Войти</button>
+   <button id="registerTab" onclick="setMode('register')">Регистрация</button>
+  </div>
+  <form id="authForm">
+   <label for="username">Логин</label>
+   <input class="field" id="username" required minlength="3" maxlength="24" autocomplete="username">
+   <label for="password">Пароль</label>
+   <input class="field" id="password" type="password" required minlength="4" maxlength="128" autocomplete="current-password">
+   <button class="btn primary full" id="authSubmit">Войти</button>
+   <p class="error" id="authError"></p>
+  </form>
+  <p class="muted" style="font-size:10px">Демо-режим: аккаунты и данные хранятся только в этом браузере. Это не серверная авторизация.</p>
+ </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+ <aside class="sidebar">
+  <div class="brand">
+   <div class="logo">F</div>
+   <div><b>FISKAAR <span>DOC</span></b><small>ROLEPLAY WORKSPACE</small></div>
+  </div>
+  <div class="label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
+  <nav>
+   <button class="nav active" data-page="home"><i>⌂</i>Главная</button>
+   <button class="nav" data-page="documents"><i>▤</i>Документы</button>
+   <button class="nav" data-page="workspace"><i>▦</i>Моё пространство</button>
+  </nav>
+  <div class="label">ИНСТРУМЕНТЫ</div>
+  <nav>
+   <button class="nav" data-page="knowledge"><i>⚖</i>RP-справочник</button>
+   <button class="nav" data-page="assistant"><i>✦</i>AI-ассистент</button>
+   <button class="nav" data-page="forms"><i>☷</i>Конструктор форм</button>
+   <button class="nav" data-page="editor"><i>✎</i>Редактор</button>
+  </nav>
+  <div class="label">СИСТЕМА</div>
+  <nav><button class="nav" data-page="settings"><i>⚙</i>Настройки</button></nav>
+  <div class="profile">
+   <div class="avatar">F</div>
+   <div class="profile-info"><b id="profileName">Пользователь</b><small>Личный профиль</small></div>
+   <button class="btn" style="padding:7px" onclick="logout()" title="Выйти">↪</button>
+  </div>
+ </aside>
+
+ <main class="main">
+  <header class="topbar">
+   <div class="crumb">FISKAAR Doc　/　<b id="crumb">Главная</b></div>
+   <div class="top-actions">
+    <input class="search" id="globalSearch" placeholder="⌕ Поиск..." aria-label="Поиск">
+    <button class="btn primary" onclick="newDocument()">＋ Создать</button>
+   </div>
+  </header>
+
+  <div class="content">
+   <section class="page active" id="home">
+    <div class="hero">
+     <div class="eyebrow">ТВОЯ RP-ЭКОСИСТЕМА</div>
+     <h1>Всё для твоей<br>RP-деятельности.</h1>
+     <p>Создавай документы, собирай правила сервера, готовь анкеты и организуй материалы в одном рабочем пространстве.</p>
+     <button class="btn primary" onclick="newDocument()">＋ Создать документ</button>
+     <button class="btn" onclick="go('knowledge')">Открыть справочник ↗</button>
+     <div class="hero-star">✧</div>
+    </div>
+    <div class="stats">
+     <div class="stat"><strong id="statDocs">0</strong><span>Мои документы</span></div>
+     <div class="stat"><strong id="statForms">0</strong><span>Мои формы</span></div>
+     <div class="stat"><strong id="statKnowledge">0</strong><span>Материалы справочника</span></div>
+    </div>
+    <div class="heading-row"><h2>Быстрый доступ</h2><span>ИНСТРУМЕНТЫ</span></div>
+    <div class="grid">
+     <button class="card card-link" onclick="go('documents')"><div class="card-icon">▤</div><h3>Документы</h3><p>Создавай и редактируй рапорты, заявления и другие тексты.</p><div class="card-foot">Открыть документы →</div></button>
+     <button class="card card-link" onclick="go('knowledge')"><div class="card-icon">⚖</div><h3>RP-справочник</h3><p>Собирай регламенты, инструкции и правила своего сервера.</p><div class="card-foot">Открыть справочник →</div></button>
+     <button class="card card-link" onclick="go('assistant')"><div class="card-icon">✦</div><h3>AI-ассистент</h3><p>Шаблоны документов и помощь с формулировками.</p><div class="card-foot">Открыть ассистента →</div></button>
+     <button class="card card-link" onclick="go('forms')"><div class="card-icon">☷</div><h3>Конструктор форм</h3><p>Собирай анкеты и шаблоны заявок.</p><div class="card-foot">Создать форму →</div></button>
+     <button class="card card-link" onclick="go('workspace')"><div class="card-icon">▦</div><h3>Рабочее пространство</h3><p>Сводка и последние документы.</p><div class="card-foot">Перейти →</div></button>
+     <button class="card card-link" onclick="go('settings')"><div class="card-icon">⚙</div><h3>Настройки</h3><p>Управляй аккаунтом и экспортируй данные.</p><div class="card-foot">Открыть настройки →</div></button>
+    </div>
+   </section>
+
+   <section class="page" id="documents">
+    <div class="eyebrow">MY LIBRARY</div><h1>Документы</h1>
+    <p class="subtitle">Твоя личная библиотека документов.</p>
+    <div class="toolbar"><input id="docSearch" class="field" placeholder="Найти документ..." style="max-width:350px"><button class="btn primary" onclick="newDocument()">＋ Новый документ</button></div>
+    <div id="docList" class="panel list-panel"></div>
+   </section>
+
+   <section class="page" id="workspace">
+    <div class="eyebrow">WORKSPACE</div><h1>Рабочее пространство</h1>
+    <p class="subtitle">Сводка по материалам и последним изменениям.</p>
+    <div class="stats">
+     <div class="stat"><strong id="wsDocs">0</strong><span>Документы</span></div>
+     <div class="stat"><strong id="wsForms">0</strong><span>Формы</span></div>
+     <div class="stat"><strong id="wsKnowledge">0</strong><span>Материалы</span></div>
+    </div>
+    <h2 class="subhead">Последние документы</h2>
+    <div id="recentList" class="panel list-panel"></div>
+   </section>
+
+   <section class="page" id="knowledge">
+    <div class="eyebrow">ROLEPLAY KNOWLEDGE BASE</div><h1>RP-справочник</h1>
+    <p class="subtitle">Создавай собственную базу правил, регламентов и инструкций.</p>
+    <div class="toolbar"><input id="knowledgeSearch" class="field" placeholder="Поиск по материалам..." style="max-width:350px"><button class="btn primary" onclick="openKnowledge()">＋ Добавить материал</button></div>
+    <div id="knowledgeList" class="grid"></div>
+    <div class="notice">Добавляй проверенные материалы своего сервера. Встроенные шаблоны не являются официальными правилами игровых проектов.</div>
+   </section>
+
+   <section class="page" id="assistant">
+    <div class="eyebrow">WRITING ASSISTANT</div><h1>AI-ассистент</h1>
+    <p class="subtitle">Генератор шаблонов и помощник для RP-документов.</p>
+    <div class="panel" style="max-width:900px">
+     <div class="chat" id="chatLog"><div class="message bot">Привет! Я помощник FISKAAR Doc. Попроси шаблон рапорта, заявления, структуру регламента или памятку. Сейчас используются локальные демонстрационные ответы, а не настоящая языковая модель.</div></div>
+     <form id="assistantForm">
+      <label for="assistantPrompt">Твоё сообщение</label>
+      <textarea class="field" id="assistantPrompt" rows="3" placeholder="Например: создай шаблон рапорта для ФСБ..." required></textarea>
+      <div class="toolbar"><button class="btn primary">Отправить ↗</button><button type="button" class="btn" onclick="clearChat()">Очистить чат</button></div>
+     </form>
+    </div>
+    <div class="notice">Чтобы использовать настоящий ИИ, потребуется подключить API через сервер. Не помещай секретные API-ключи в HTML.</div>
+   </section>
+
+   <section class="page" id="forms">
+    <div class="eyebrow">FORM BUILDER</div><h1>Конструктор форм</h1>
+    <p class="subtitle">Создавай шаблоны анкет и заявлений.</p>
+    <div class="panel" style="max-width:850px">
+     <form id="formBuilder">
+      <label for="formTitle">Название формы</label><input class="field" id="formTitle" required maxlength="180" placeholder="Например: Заявление на вступление">
+      <label for="formDescription">Описание</label><textarea class="field" id="formDescription" rows="2" placeholder="Назначение формы"></textarea>
+      <label for="formQuestions">Вопросы — каждый с новой строки</label><textarea class="field" id="formQuestions" rows="5" placeholder="Игровой никнейм&#10;Возраст персонажа&#10;Почему хотите вступить?"></textarea>
+      <div class="toolbar"><button class="btn primary">Сохранить форму</button></div>
+     </form>
+    </div>
+    <h2 class="subhead">Мои формы</h2><div id="formList" class="panel list-panel"></div>
+   </section>
+
+   <section class="page" id="editor">
+    <div class="eyebrow">DOCUMENT EDITOR</div><h1>Редактор документов</h1>
+    <p class="subtitle">Создавай текст, форматируй его и сохраняй в своей библиотеке.</p>
+    <div class="editor-layout">
+     <div class="paper">
+      <div class="editor-tools">
+       <button type="button" onclick="format('bold')"><b>B</b></button>
+       <button type="button" onclick="format('italic')"><i>I</i></button>
+       <button type="button" onclick="format('underline')"><u>U</u></button>
+       <button type="button" onclick="format('insertUnorderedList')">• Список</button>
+       <button type="button" onclick="format('formatBlock','H2')">Заголовок</button>
+       <button type="button" onclick="format('removeFormat')">Сбросить стиль</button>
+      </div>
+      <input id="editTitle" class="paper-title" maxlength="180" placeholder="Название документа">
+      <div id="docBody" class="paper-body" contenteditable="true" data-placeholder="Начни вводить текст документа..."></div>
+     </div>
+     <aside class="panel">
+      <h3>Сохранение</h3><p class="muted">Сохрани текст в своей библиотеке.</p>
+      <button class="btn primary full" onclick="saveDocument()">Сохранить документ</button>
+      <button class="btn full" onclick="exportTxt()">Экспорт TXT</button>
+      <button class="btn full" onclick="exportHtml()">Экспорт HTML</button>
+      <button class="btn full" onclick="go('documents')">Закрыть редактор</button>
+     </aside>
+    </div>
+   </section>
+
+   <section class="page" id="settings">
+    <div class="eyebrow">ACCOUNT & DATA</div><h1>Настройки</h1>
+    <p class="subtitle">Управление аккаунтом и резервными копиями.</p>
+    <div class="panel" style="max-width:850px">
+     <h3>Аккаунт</h3><p class="muted">Текущий пользователь: <b id="settingsUser"></b></p>
+     <h3>Резервная копия</h3><p class="muted">Сохрани документы, формы и материалы в JSON-файл.</p>
+     <div class="toolbar"><button class="btn primary" onclick="backup()">Экспортировать данные</button><label class="btn" style="margin:0;cursor:pointer">Импортировать JSON<input type="file" id="restoreFile" accept=".json" hidden></label></div>
+     <div class="notice">Данные хранятся в браузере. Очистка данных сайта или удаление аккаунта может привести к их потере. Регулярно создавай резервную копию.</div>
+     <h3>Профиль</h3><button class="btn danger" onclick="logout()">Выйти из аккаунта</button>
+    </div>
+   </section>
+   <footer>FISKAAR Doc · Независимый RP Workspace · <span id="year"></span></footer>
+  </div>
+ </main>
+</div>
+
+<div class="modal" id="knowledgeModal">
+ <div class="modal-card">
+  <div class="modal-head"><h2 id="knowledgeModalTitle">Новый материал</h2><button class="btn" onclick="closeKnowledge()">✕</button></div>
+  <form id="knowledgeForm">
+   <input type="hidden" id="knowledgeId">
+   <label for="knowledgeTitle">Название</label><input class="field" id="knowledgeTitle" required maxlength="180">
+   <label for="knowledgeCategory">Категория</label><input class="field" id="knowledgeCategory" maxlength="80" placeholder="Регламенты">
+   <label for="knowledgeBody">Содержание</label><textarea class="field" id="knowledgeBody" rows="8" maxlength="30000"></textarea>
+   <div class="toolbar"><button class="btn primary">Сохранить материал</button><button type="button" class="btn" onclick="closeKnowledge()">Отмена</button></div>
+  </form>
+ </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const DBKEY = "fiskaar_doc_v1";
+let mode = "login";
+let user = null;
+let data = {users:[],documents:[],forms:[],knowledge:[]};
+let currentDocId = null;
+let toastTimer = null;
+
+function loadData(){
+ try {
+  const saved = JSON.parse(localStorage.getItem(DBKEY) || "{}");
+  data = {
+   users:Array.isArray(saved.users)?saved.users:[],
+   documents:Array.isArray(saved.documents)?saved.documents:[],
+   forms:Array.isArray(saved.forms)?saved.forms:[],
+   knowledge:Array.isArray(saved.knowledge)?saved.knowledge:[]
+  };
+ } catch(e) {
+  data={users:[],documents:[],forms:[],knowledge:[]};
+ }
+}
+function persist(){
+ try {localStorage.setItem(DBKEY,JSON.stringify(data));return true;}
+ catch(e){notify("Не удалось сохранить данные. Возможно, закончилось место в браузере.");return false;}
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,9);}
+function esc(s=""){
+ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function notify(msg){
+ const el=$("toast");el.textContent=msg;el.style.display="block";
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display="none",2800);
+}
+function dateText(d){
+ if(!d)return "";
+ const date=new Date(d);
+ return isNaN(date)?String(d):date.toLocaleString("ru-RU");
+}
+function setMode(next){
+ mode=next;
+ $("loginTab").classList.toggle("active",mode==="login");
+ $("registerTab").classList.toggle("active",mode==="register");
+ $("authSubmit").textContent=mode==="login"?"Войти":"Создать аккаунт";
+ $("authError").textContent="";
+ $("password").autocomplete=mode==="login"?"current-password":"new-password";
+ $("password").minLength=mode==="login"?1:4;
+}
+function showAuth(){
+ $("auth").style.display="grid";$("app").style.display="none";
+}
+function showApp(){
+ $("auth").style.display="none";$("app").style.display="flex";
+ $("profileName").textContent=user.username;$("settingsUser").textContent=user.username;
+ refreshAll();go("home");
+}
+function sessionKey(){return "fiskaar_session";}
+function saveSession(){
+ try{sessionStorage.setItem(sessionKey(),user.username);}catch(e){}
+}
+function clearSession(){
+ try{sessionStorage.removeItem(sessionKey());}catch(e){}
+}
+function authSubmit(e){
+ e.preventDefault();
+ const name=$("username").value.trim();
+ const pass=$("password").value;
+ $("authError").textContent="";
+ if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(name)){
+  $("authError").textContent="Логин должен содержать 3–24 латинских символа, цифры, точку, дефис или подчёркивание.";return;
+ }
+ if(pass.length<(mode==="register"?4:1)){
+  $("authError").textContent="Пароль слишком короткий.";return;
+ }
+ let found=data.users.find(x=>x.username.toLowerCase()===name.toLowerCase());
+ if(mode==="register"){
+  if(found){$("authError").textContent="Этот логин уже занят.";return;}
+  found={username:name,password:pass};
+  data.users.push(found);persist();
+ }else{
+  if(!found||found.password!==pass){
+   $("authError").textContent="Неверный логин или пароль.";return;
+  }
+ }
+ user={username:found.username};saveSession();$("password").value="";showApp();
+}
+function logout(){
+ user=null;clearSession();showAuth();setMode("login");
+}
+function go(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
+ document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const b=document.querySelector('.nav[data-page="'+page+'"]');
+ $("crumb").textContent=b?b.textContent.trim():page;
+ if(page==="documents")renderDocuments();
+ if(page==="workspace")renderWorkspace();
+ if(page==="knowledge")renderKnowledge();
+ if(page==="forms")renderForms();
+}
+document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+$("authForm").addEventListener("submit",authSubmit);
+$("docSearch").addEventListener("input",renderDocuments);
+$("knowledgeSearch").addEventListener("input",renderKnowledge);
+$("formBuilder").addEventListener("submit",saveForm);
+$("knowledgeForm").addEventListener("submit",saveKnowledge);
+$("assistantForm").addEventListener("submit",askAssistant);
+$("globalSearch").addEventListener("keydown",globalSearch);
+$("restoreFile").addEventListener("change",restore);
+$("year").textContent=new Date().getFullYear();
+
+function owned(list){return list.filter(x=>x.owner===user.username);}
+function refreshAll(){
+ const docs=owned(data.documents),forms=owned(data.forms),knowledge=owned(data.knowledge);
+ $("statDocs").textContent=docs.length;$("statForms").textContent=forms.length;$("statKnowledge").textContent=knowledge.length;
+ renderDocuments();renderWorkspace();renderKnowledge();renderForms();
+}
+function newDocument(){
+ currentDocId=null;$("editTitle").value="";$("docBody").innerHTML="";
+ go("editor");$("editTitle").focus();
+}
+function format(cmd,value=null){
+ $("docBody").focus();document.execCommand(cmd,false,value);
+}
+function saveDocument(){
+ if(!user)return;
+ const title=$("editTitle").value.trim()||"Документ без названия";
+ const content=$("docBody").innerHTML;
+ if(currentDocId){
+  const d=data.documents.find(x=>x.id===currentDocId&&x.owner===user.username);
+  if(d){d.title=title;d.content=content;d.updated=new Date().toISOString();}
+ }else{
+  const d={id:uid(),owner:user.username,title,content,updated:new Date().toISOString()};
+  data.documents.push(d);currentDocId=d.id;
+ }
+ if(persist()){refreshAll();notify("Документ сохранён");}
+}
+function openDocument(id){
+ const d=data.documents.find(x=>x.id===id&&x.owner===user.username);
+ if(!d)return;
+ currentDocId=id;$("editTitle").value=d.title;$("docBody").innerHTML=d.content;go("editor");
+}
+function deleteDocument(id){
+ if(!confirm("Удалить этот документ?"))return;
+ data.documents=data.documents.filter(x=>!(x.id===id&&x.owner===user.username));
+ if(currentDocId===id)currentDocId=null;
+ persist();refreshAll();notify("Документ удалён");
+}
+function renderDocuments(){
+ if(!user)return;
+ const q=($("docSearch").value||"").toLowerCase();
+ const list=owned(data.documents).filter(d=>d.title.toLowerCase().includes(q)).sort((a,b)=>b.updated.localeCompare(a.updated));
+ $("docList").innerHTML=list.length?list.map(d=>`
+  <div class="item"><div><strong>${esc(d.title)}</strong><p>Изменён: ${esc(dateText(d.updated))}</p></div>
+  <div class="item-actions"><button class="btn" data-open="${esc(d.id)}">Открыть</button><button class="btn danger" data-del="${esc(d.id)}">Удалить</button></div></div>`).join(""):'<div class="empty">Документов пока нет.<br>Создай свой первый документ.</div>';
+ $("docList").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDocument(b.dataset.open));
+ $("docList").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>deleteDocument(b.dataset.del));
+}
+function renderWorkspace(){
+ if(!user)return;
+ const docs=owned(data.documents).sort((a,b)=>b.updated.localeCompare(a.updated));
+ $("wsDocs").textContent=docs.length;$("wsForms").textContent=owned(data.forms).length;$("wsKnowledge").textContent=owned(data.knowledge).length;
+ $("recentList").innerHTML=docs.length?docs.slice(0,5).map(d=>`
+ <div class="item"><div><strong>${esc(d.title)}</strong><p>${esc(dateText(d.updated))}</p></div><button class="btn" data-recent="${esc(d.id)}">Открыть</button></div>`).join(""):'<div class="empty">Здесь появятся последние документы.</div>';
+ $("recentList").querySelectorAll("[data-recent]").forEach(b=>b.onclick=()=>openDocument(b.dataset.recent));
+}
+function openKnowledge(item=null){
+ $("knowledgeForm").reset();$("knowledgeId").value=item?item.id:"";
+ $("knowledgeModalTitle").textContent=item?"Редактировать материал":"Новый материал";
+ if(item){$("knowledgeTitle").value=item.title;$("knowledgeCategory").value=item.category;$("knowledgeBody").value=item.body;}
+ $("knowledgeModal").classList.add("open");
+}
+function closeKnowledge(){$("knowledgeModal").classList.remove("open");}
+function saveKnowledge(e){
+ e.preventDefault();
+ const id=$("knowledgeId").value;
+ const title=$("knowledgeTitle").value.trim();
+ if(!title){notify("Введи название материала");return;}
+ const values={title,category:$("knowledgeCategory").value.trim()||"Другое",body:$("knowledgeBody").value};
+ if(id){
+  const item=data.knowledge.find(x=>x.id===id&&x.owner===user.username);
+  if(item)Object.assign(item,values,{updated:new Date().toISOString()});
+ }else{
+  data.knowledge.push({id:uid(),owner:user.username,...values,updated:new Date().toISOString()});
+ }
+ persist();closeKnowledge();refreshAll();notify("Материал сохранён");
+}
+function deleteKnowledge(id){
+ if(!confirm("Удалить материал?"))return;
+ data.knowledge=data.knowledge.filter(x=>!(x.id===id&&x.owner===user.username));
+ persist();refreshAll();notify("Материал удалён");
+}
+function renderKnowledge(){
+ if(!user)return;
+ const q=($("knowledgeSearch").value||"").toLowerCase();
+ const list=owned(data.knowledge).filter(x=>(x.title+" "+x.category+" "+x.body).toLowerCase().includes(q));
+ $("knowledgeList").innerHTML=list.length?list.map(x=>`
+ <article class="card"><span class="pill">${esc(x.category)}</span><h3>${esc(x.title)}</h3>
+ <p>${esc(x.body||"Нет описания").slice(0,260)}</p>
+ <div class="toolbar"><button class="btn" data-edit-k="${esc(x.id)}">Изменить</button><button class="btn danger" data-del-k="${esc(x.id)}">Удалить</button></div></article>`).join(""):'<div class="panel empty">Материалов пока нет.<br>Добавь первый материал.</div>';
+ $("knowledgeList").querySelectorAll("[data-edit-k]").forEach(b=>b.onclick=()=>openKnowledge(data.knowledge.find(x=>x.id===b.dataset.editK&&x.owner===user.username)));
+ $("knowledgeList").querySelectorAll("[data-del-k]").forEach(b=>b.onclick=()=>deleteKnowledge(b.dataset.delK));
+}
+function saveForm(e){
+ e.preventDefault();
+ const title=$("formTitle").value.trim();
+ if(!title)return;
+ const questions=$("formQuestions").value.split("\n").map(x=>x.trim()).filter(Boolean);
+ data.forms.push({id:uid(),owner:user.username,title,description:$("formDescription").value,questions,created:new Date().toISOString()});
+ persist();$("formBuilder").reset();refreshAll();notify("Форма сохранена");
+}
+function renderForms(){
+ if(!user)return;
+ const list=owned(data.forms).sort((a,b)=>b.created.localeCompare(a.created));
+ $("formList").innerHTML=list.length?list.map(f=>`
+ <div class="item"><div><strong>${esc(f.title)}</strong><p>${esc(f.description||"Без описания")} · Вопросов: ${f.questions.length}</p></div>
+ <div class="item-actions"><button class="btn" data-preview="${esc(f.id)}">Просмотр</button><button class="btn danger" data-delete-form="${esc(f.id)}">Удалить</button></div></div>`).join(""):'<div class="empty">Созданных форм пока нет.</div>';
+ $("formList").querySelectorAll("[data-preview]").forEach(b=>b.onclick=()=>previewForm(b.dataset.preview));
+ $("formList").querySelectorAll("[data-delete-form]").forEach(b=>b.onclick=()=>deleteForm(b.dataset.deleteForm));
+}
+function previewForm(id){
+ const f=data.forms.find(x=>x.id===id&&x.owner===user.username);if(!f)return;
+ alert(f.title+"\n\n"+f.description+"\n\n"+f.questions.map((q,i)=>(i+1)+". "+q).join("\n"));
+}
+function deleteForm(id){
+ if(!confirm("Удалить форму?"))return;
+ data.forms=data.forms.filter(x=>!(x.id===id&&x.owner===user.username));
+ persist();refreshAll();notify("Форма удалена");
+}
+function clearChat(){
+ $("chatLog").innerHTML='<div class="message bot">Чат очищен. Напиши, какой документ тебе нужен.</div>';
+}
+function addMessage(text,type){
+ const el=document.createElement("div");el.className="message "+type;el.textContent=text;
+ $("chatLog").appendChild(el);$("chatLog").scrollTop=$("chatLog").scrollHeight;
+}
+function assistantReply(prompt){
+ const p=prompt.toLowerCase();
+ if(p.includes("рапорт"))return "ШАБЛОН РАПОРТА\n\nКому: [должность, игровой никнейм]\nОт кого: [должность, игровой никнейм]\n\nДокладываю о следующем: [описание события в рамках RP].\n\nПриложения: [при наличии]\nДата: [дата]";
+ if(p.includes("заявлен"))return "ШАБЛОН ЗАЯВЛЕНИЯ\n\nКому: [название организации]\nОт: [игровой никнейм]\n\nПрошу рассмотреть моё заявление по следующему вопросу: [описание].\n\nДополнительные сведения: [указать].\nДата: [дата]";
+ if(p.includes("устав")||p.includes("регламент")||p.includes("правил"))return "СТРУКТУРА РЕГЛАМЕНТА\n\n1. Общие положения\n2. Права и обязанности\n3. Порядок работы\n4. Ответственность в рамках RP\n5. Заключительные положения\n\nЗаполни разделы правилами своего сервера и проверь их актуальность.";
+ if(p.includes("памят"))return "СТРУКТУРА ПАМЯТКИ\n\n1. Назначение и область применения\n2. Подготовка к работе\n3. Пошаговый порядок действий\n4. Частые ошибки\n5. Контрольный список\n\nДобавь требования своей организации и правила сервера.";
+ return "Я могу помочь со структурой документа. Уточни тип текста: рапорт, заявление, памятка, анкета или регламент. Это демонстрационный помощник с шаблонными ответами, а не подключённая языковая модель.";
+}
+function askAssistant(e){
+ e.preventDefault();const prompt=$("assistantPrompt").value.trim();if(!prompt)return;
+ addMessage(prompt,"user");$("assistantPrompt").value="";
+ addMessage(assistantReply(prompt),"bot");
+}
+function download(name,content,type="text/plain"){
+ const blob=new Blob(["\ufeff",content],{type:type+";charset=utf-8"});
+ const url=URL.createObjectURL(blob);const a=document.createElement("a");
+ a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportTxt(){
+ download((($("editTitle").value||"document").replace(/[\\/:*?"<>|]/g,"_"))+".txt",$("docBody").innerText);
+}
+function exportHtml(){
+ const title=$("editTitle").value||"Документ";
+ download("document.html",'<!doctype html><html lang="ru"><meta charset="utf-8"><title>'+esc(title)+'</title><body><h1>'+esc(title)+'</h1>'+ $("docBody").innerHTML+'</body></html>',"text/html");
+}
+function backup(){
+ download("fiskaar-backup.json",JSON.stringify({
+  version:1,documents:owned(data.documents),forms:owned(data.forms),knowledge:owned(data.knowledge)
+ },null,2),"application/json");
+}
+async function restore(e){
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const backupData=JSON.parse(await file.text());
+  if(!confirm("Импортировать данные в текущий аккаунт?"))return;
+  for(const d of Array.isArray(backupData.documents)?backupData.documents:[]){
+   data.documents.push({id:uid(),owner:user.username,title:String(d.title||"Импортированный документ").slice(0,180),content:String(d.content||""),updated:new Date().toISOString()});
+  }
+  for(const f of Array.isArray(backupData.forms)?backupData.forms:[]){
+   data.forms.push({id:uid(),owner:user.username,title:String(f.title||"Импортированная форма").slice(0,180),description:String(f.description||""),questions:Array.isArray(f.questions)?f.questions.map(String):[],created:new Date().toISOString()});
+  }
+  for(const k of Array.isArray(backupData.knowledge)?backupData.knowledge:[]){
+   data.knowledge.push({id:uid(),owner:user.username,title:String(k.title||"Импортированный материал").slice(0,180),category:String(k.category||"Другое"),body:String(k.body||""),updated:new Date().toISOString()});
+  }
+  persist();refreshAll();notify("Импорт завершён");
+ }catch(err){notify("Не удалось прочитать JSON-файл");}
+ finally{e.target.value="";}
+}
+function globalSearch(e){
+ if(e.key!=="Enter")return;
+ const q=e.target.value.trim().toLowerCase();if(!q)return;
+ const d=owned(data.documents).find(x=>x.title.toLowerCase().includes(q));
+ if(d){go("documents");openDocument(d.id);return;}
+ const k=owned(data.knowledge).find(x=>(x.title+" "+x.category+" "+x.body).toLowerCase().includes(q));
+ if(k){go("knowledge");$("knowledgeSearch").value=q;renderKnowledge();return;}
+ if("форма анкета".includes(q)){go("forms");return;}
+ notify("Ничего не найдено.");
+}
+loadData();
+try{
+ const last=sessionStorage.getItem(sessionKey());
+ if(last&&data.users.some(x=>x.username===last)){
+  user={username:last};showApp();
+ }else showAuth();
+}catch(e){showAuth();}
+</script>
+</body>
+</html>
